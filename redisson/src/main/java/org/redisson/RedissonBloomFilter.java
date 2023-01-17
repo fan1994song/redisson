@@ -106,7 +106,9 @@ public class RedissonBloomFilter<T> extends RedissonExpirable implements RBloomF
                 readConfig();
             }
 
+            // hash函数的数量
             int hashIterations = this.hashIterations;
+            // bit位
             long size = this.size;
 
             long[] indexes = hash(hashes[0], hashes[1], hashIterations, size);
@@ -134,6 +136,14 @@ public class RedissonBloomFilter<T> extends RedissonExpirable implements RBloomF
         }
     }
 
+    /**
+     * bit位落点数组
+     * @param hash1
+     * @param hash2
+     * @param iterations
+     * @param size
+     * @return
+     */
     private long[] hash(long hash1, long hash2, int iterations, long size) {
         long[] indexes = new long[iterations];
         long hash = hash1;
@@ -253,6 +263,7 @@ public class RedissonBloomFilter<T> extends RedissonExpirable implements RBloomF
             throw new IllegalArgumentException("Bloom filter false probability can't be negative");
         }
 
+        // bit位
         size = optimalNumOfBits(expectedInsertions, falseProbability);
         if (size == 0) {
             throw new IllegalArgumentException("Bloom filter calculated size is " + size);
@@ -260,6 +271,7 @@ public class RedissonBloomFilter<T> extends RedissonExpirable implements RBloomF
         if (size > getMaxSize()) {
             throw new IllegalArgumentException("Bloom filter size can't be greater than " + getMaxSize() + ". But calculated size is " + size);
         }
+        // 哈希函数的最优数量
         hashIterations = optimalNumOfHashFunctions(expectedInsertions, size);
 
         CommandBatchService executorService = new CommandBatchService(commandExecutor);

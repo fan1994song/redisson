@@ -69,8 +69,8 @@ public class RedissonBloomFilterTest extends BaseTest {
     public void testExpire() throws InterruptedException {
         RBloomFilter<String> filter = redisson.getBloomFilter("filter");
         filter.tryInit(55000000L, 0.03);
-
         filter.add("test");
+        filter.contains("test");
         filter.expire(Instant.now().plusSeconds(2));
 
         Thread.sleep(2100);
